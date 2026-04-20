@@ -9,6 +9,7 @@
 - [Common Prerequisites](#common-prerequisites)
 - [Windows Guide](#windows-guide)
 - [Linux Guide](#linux-guide)
+- [Library-only Build](#library-only-build)
 - [Repository Structure](#repository-structure)
 - [Application Dependency Architecture](#application-dependency-architecture)
 - [Advanced Topics](#advanced-topics)
@@ -154,6 +155,59 @@ Execute `build.sh` to generate executables:
 ```bash
 ./__Builds/Linux/Release/QTAC
 ```
+
+## Library-only Build
+
+Pass `--lib-only` to `build.sh` (or `-DBUILD_UI=OFF` to CMake directly) to
+build only `QCommonConsole` and `TACDev`, skipping all GUI applications and
+the Qt Widgets / Gui / Multimedia modules.
+
+> [!IMPORTANT]
+> **Qt is still required.** `QCommonConsole` uses Qt as its core framework
+> (serial port I/O, XML parsing, networking, threading). The `--lib-only`
+> flag removes the *graphical* Qt dependency, not Qt itself. Minimum
+> required components: Core, Concurrent, SerialPort, Network, Xml.
+
+### What you get
+
+| Output | Description |
+| :-- | :-- |
+| `QCommonConsole` | Headless device-control library. Handles FTDI/PSoC/PIC32CX boards, loads `.tcnf` board configurations, drives the TAC protocol. |
+| `TACDev` | Thin `extern "C"` wrapper over `QCommonConsole`. Its public API (`TACDev.h`) uses only primitive C types — no Qt or QCommonConsole types leak through — making it suitable for use from Python, Java, C# or any language with a C FFI. |
+
+`TACDev` cannot be built or linked without `QCommonConsole` (it references
+its symbols directly), and the `.tcnf` board configuration files are parsed
+by `QCommonConsole` — there is no independent loader.
+
+### Build
+
+**Linux** (Qt via apt, no QTBIN needed):
+```bash
+sudo apt install qt6-base-dev qt6-serialport-dev
+./build.sh --lib-only
+```
+
+**Linux** (Qt Online Installer):
+```bash
+export QTBIN=/path/to/Qt/<version>/gcc_64/bin
+./build.sh --lib-only
+```
+
+**Windows**:
+```cmd
+set QTBIN=C:\Qt\<version>\msvc2022_64\bin
+build.bat
+cmake -S . -B build\Release ^
+    -DCMAKE_BUILD_TYPE=Release ^
+    -DBUILD_UI=OFF
+cmake --build build\Release
+```
+
+**Build output**: `QCommonConsole` and `TACDev` static libraries under
+`__Builds/Linux/Release/lib/` (Linux) or `__Builds/x64/Release/lib/` (Windows).
+
+The platform configuration files in `configurations/` are plain `.tcnf`
+data files and require no build step; copy them alongside the application.
 
 ## Repository Structure
 
