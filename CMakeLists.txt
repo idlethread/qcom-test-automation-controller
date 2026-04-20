@@ -42,6 +42,14 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# Derive CMAKE_PREFIX_PATH from QTBIN if not already supplied, mirroring
+# what build.sh passes via -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")".
+if(DEFINED ENV{QTBIN} AND NOT CMAKE_PREFIX_PATH)
+    get_filename_component(_qt_prefix "$ENV{QTBIN}/.." ABSOLUTE)
+    set(CMAKE_PREFIX_PATH "${_qt_prefix}")
+    message(STATUS "Qt prefix path derived from QTBIN: ${_qt_prefix}")
+endif()
+
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Concurrent Gui Multimedia MultimediaWidgets Network SerialPort Widgets Xml)
 
