@@ -48,6 +48,20 @@ if(DEFINED ENV{QTBIN} AND NOT CMAKE_PREFIX_PATH)
     get_filename_component(_qt_prefix "$ENV{QTBIN}/.." ABSOLUTE)
     set(CMAKE_PREFIX_PATH "${_qt_prefix}")
     message(STATUS "Qt prefix path derived from QTBIN: ${_qt_prefix}")
+elseif(APPLE AND NOT CMAKE_PREFIX_PATH)
+    find_program(_brew brew)
+    if(_brew)
+        execute_process(
+            COMMAND "${_brew}" --prefix qt
+            OUTPUT_VARIABLE _brew_qt_prefix
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+        if(_brew_qt_prefix)
+            set(CMAKE_PREFIX_PATH "${_brew_qt_prefix}")
+            message(STATUS "Qt prefix path from Homebrew: ${_brew_qt_prefix}")
+        endif()
+    endif()
 endif()
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Multimedia)
