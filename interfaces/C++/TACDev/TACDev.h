@@ -39,16 +39,16 @@
 */
 
 #if defined(TACDEV_LIBRARY)
-	#ifdef __linux__
-		#define TACDEV_EXPORT __attribute__((visibility("default")))
-	#else
+	#ifdef _WIN32
 		#define TACDEV_EXPORT __declspec(dllexport)
+	#else
+		#define TACDEV_EXPORT __attribute__((visibility("default")))
 	#endif
 #else
-	#ifdef __linux__
-	#   define TACDEV_EXPORT __attribute__((visibility("default")))
+	#ifdef _WIN32
+		#define TACDEV_EXPORT __declspec(dllimport)
 	#else
-	#  define TACDEV_EXPORT  __declspec(dllimport)
+	#   define TACDEV_EXPORT __attribute__((visibility("default")))
 	#endif
 #endif
 
