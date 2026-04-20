@@ -10,6 +10,7 @@
 - [Windows Guide](#windows-guide)
 - [Linux Guide](#linux-guide)
 - [Library-only Build](#library-only-build)
+- [Installing the Libraries](#installing-the-libraries)
 - [Repository Structure](#repository-structure)
 - [Application Dependency Architecture](#application-dependency-architecture)
 - [Advanced Topics](#advanced-topics)
@@ -208,6 +209,48 @@ cmake --build build\Release
 
 The platform configuration files in `configurations/` are plain `.tcnf`
 data files and require no build step; copy them alongside the application.
+
+## Installing the Libraries
+
+`cmake --install` places the libraries, the `TACDev.h` public header, and
+the `.tcnf` board configurations into standard system directories so
+wrappers and downstream projects can consume them without referencing the
+build tree.
+
+**What gets installed**
+
+| Path | Contents |
+| :-- | :-- |
+| `<prefix>/lib/` | `libQCommonConsole.a`, `libTACDev.a`, `libftd2xx.a` (Linux) / `libftd2xx.dylib` (macOS) |
+| `<prefix>/include/qtac/` | `TACDev.h` — public C API |
+| `<prefix>/share/qtac/configurations/` | All `.tcnf` board configuration files |
+
+### macOS — Homebrew
+
+**Option A: local tap** (tracked by Homebrew, supports `brew uninstall`):
+```bash
+brew tap-new --no-git local/qtac
+cp Formula/qtac.rb $(brew --repository)/Library/Taps/local/homebrew-qtac/Formula/
+brew install --HEAD local/qtac/qtac
+```
+
+**Option B: direct install** (simpler, no uninstall tracking):
+```bash
+./build.sh --lib-only
+cmake --install build/Release --prefix $(brew --prefix)
+```
+
+### Linux
+
+```bash
+./build.sh --lib-only
+sudo cmake --install build/Release          # installs to /usr/local
+```
+
+To use a custom prefix (e.g. to avoid `sudo`):
+```bash
+cmake --install build/Release --prefix ~/.local
+```
 
 ## Repository Structure
 

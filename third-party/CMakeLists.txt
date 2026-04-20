@@ -190,6 +190,8 @@ else()
         IMPORTED_LOCATION_RELEASE "${RELEASE_LIB}"
         IMPORTED_LOCATION         "${RELEASE_LIB}"
     )
+    # Install FTDI library so downstream consumers can link against it
+    install(FILES "${RELEASE_LIB}" DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 if(WIN32 AND DEFINED ENV{QTDIR})
