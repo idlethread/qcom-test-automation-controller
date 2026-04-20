@@ -36,11 +36,6 @@
 
 set -e
 
-if [ -z "$QTBIN" ]; then
-    echo "Set QTBIN first"
-    exit 1
-fi
-
 BUILD_UI=ON
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -50,17 +45,30 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-export PATH="$QTBIN:$PATH"
+if [ -z "$QTBIN" ]; then
+    if [ "$BUILD_UI" = "ON" ]; then
+        echo "Set QTBIN first"
+        exit 1
+    fi
+else
+    export PATH="$QTBIN:$PATH"
+fi
+
+# Build CMAKE_PREFIX_PATH arg only when QTBIN is available
+CMAKE_PREFIX_ARGS=()
+if [ -n "$QTBIN" ]; then
+    CMAKE_PREFIX_ARGS=("-DCMAKE_PREFIX_PATH=$(dirname "$QTBIN")")
+fi
 
 # Clean start
 rm -rf build __Builds
 
 # Debug
-cmake -S . -B build/Debug -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Debug -DBUILD_UI=${BUILD_UI}
+cmake -S . -B build/Debug "${CMAKE_PREFIX_ARGS[@]}" -DCMAKE_BUILD_TYPE=Debug -DBUILD_UI=${BUILD_UI}
 cmake --build build/Debug
 
 # Release
-cmake -S . -B build/Release -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Release -DBUILD_UI=${BUILD_UI}
+cmake -S . -B build/Release "${CMAKE_PREFIX_ARGS[@]}" -DCMAKE_BUILD_TYPE=Release -DBUILD_UI=${BUILD_UI}
 cmake --build build/Release
 
 echo "Check __Builds directory"
