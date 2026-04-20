@@ -42,8 +42,8 @@ if(WIN32)
 elseif(APPLE)
     set(FTDI_URL "https://ftdichip.com/wp-content/uploads/2024/04/D2XX1.4.30.dmg")
     set(FTDI_ARCHIVE "D2XX1.4.30.dmg")
-    set(DEBUG_LIB "${CMAKE_SOURCE_DIR}/__Builds/Linux/Debug/lib/libftd2xx.dylib")
-    set(RELEASE_LIB "${CMAKE_SOURCE_DIR}/__Builds/Linux/Release/lib/libftd2xx.dylib")
+    set(DEBUG_LIB "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Debug/lib/libftd2xx.dylib")
+    set(RELEASE_LIB "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Release/lib/libftd2xx.dylib")
 else()
     set(FTDI_URL "https://ftdichip.com/wp-content/uploads/2025/03/libftd2xx-linux-x86_64-1.4.33.tgz")
     set(FTDI_ARCHIVE "libftd2xx-linux-x86_64-1.4.33.tgz")
@@ -116,8 +116,8 @@ if(NEED_DOWNLOAD)
 
         file(REMOVE_RECURSE "${TEMP_DIR}")
     elseif(APPLE)
-        file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/__Builds/Linux/Debug/lib")
-        file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/__Builds/Linux/Release/lib")
+        file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Debug/lib")
+        file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Release/lib")
 
         execute_process(
             COMMAND hdiutil attach "${ARCHIVE_PATH}" -nobrowse
@@ -146,14 +146,14 @@ if(NEED_DOWNLOAD)
         list(GET FTDI_DYLIBS 0 FTDI_SOURCE)
 
         get_filename_component(FTDI_SOURCE_NAME "${FTDI_SOURCE}" NAME)
-        file(COPY "${FTDI_SOURCE}" DESTINATION "${CMAKE_SOURCE_DIR}/__Builds/Linux/Debug/lib")
-        file(COPY "${FTDI_SOURCE}" DESTINATION "${CMAKE_SOURCE_DIR}/__Builds/Linux/Release/lib")
+        file(COPY "${FTDI_SOURCE}" DESTINATION "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Debug/lib")
+        file(COPY "${FTDI_SOURCE}" DESTINATION "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Release/lib")
 
         if(NOT FTDI_SOURCE_NAME STREQUAL "libftd2xx.dylib")
-            file(RENAME "${CMAKE_SOURCE_DIR}/__Builds/Linux/Debug/lib/${FTDI_SOURCE_NAME}"
-                        "${CMAKE_SOURCE_DIR}/__Builds/Linux/Debug/lib/libftd2xx.dylib")
-            file(RENAME "${CMAKE_SOURCE_DIR}/__Builds/Linux/Release/lib/${FTDI_SOURCE_NAME}"
-                        "${CMAKE_SOURCE_DIR}/__Builds/Linux/Release/lib/libftd2xx.dylib")
+            file(RENAME "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Debug/lib/${FTDI_SOURCE_NAME}"
+                        "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Debug/lib/libftd2xx.dylib")
+            file(RENAME "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Release/lib/${FTDI_SOURCE_NAME}"
+                        "${CMAKE_SOURCE_DIR}/__Builds/Darwin/Release/lib/libftd2xx.dylib")
         endif()
 
         execute_process(COMMAND hdiutil detach "${MOUNT_POINT}" -quiet)
