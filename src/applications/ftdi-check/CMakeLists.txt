@@ -46,6 +46,8 @@ if(WIN32)
     target_sources(${APP_NAME} PRIVATE resources/FTDICheck.rc)
 elseif(LINUX)
     install(FILES resources/FTDICheck.desktop DESTINATION share/applications)
+elseif(APPLE)
+    # No platform-specific install rules needed on macOS
 endif()
 
 target_include_directories(${APP_NAME} PRIVATE

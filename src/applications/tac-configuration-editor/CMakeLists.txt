@@ -65,6 +65,8 @@ if(WIN32)
 elseif(LINUX)
     install(FILES resources/TACConfigEditor.desktop DESTINATION share/applications)
     install(FILES resources/TACConfigEditor.png DESTINATION share/icons/hicolor/48x48/apps RENAME tac-config-editor.png)
+elseif(APPLE)
+    # No platform-specific install rules needed on macOS
 endif()
 
 target_include_directories(${APP_NAME} PRIVATE
