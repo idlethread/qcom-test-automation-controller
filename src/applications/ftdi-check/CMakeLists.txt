@@ -44,7 +44,7 @@ qt_add_executable(${APP_NAME}
 
 if(WIN32)
     target_sources(${APP_NAME} PRIVATE resources/FTDICheck.rc)
-elseif(UNIX AND NOT APPLE)
+elseif(LINUX)
     install(FILES resources/FTDICheck.desktop DESTINATION share/applications)
 endif()
 

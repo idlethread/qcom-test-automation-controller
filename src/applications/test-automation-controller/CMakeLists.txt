@@ -53,7 +53,7 @@ qt_add_executable(${APP_NAME} WIN32
 if(WIN32)
     set_target_properties(${APP_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
     target_sources(${APP_NAME} PRIVATE resources/TAC.rc)
-elseif(UNIX AND NOT APPLE)
+elseif(LINUX)
     install(FILES resources/TAC.desktop DESTINATION share/applications)
     install(FILES resources/TAC.png DESTINATION share/icons/hicolor/48x48/apps RENAME tac.png)
 endif()
