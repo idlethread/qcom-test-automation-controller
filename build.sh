@@ -41,17 +41,26 @@ if [ -z "$QTBIN" ]; then
     exit 1
 fi
 
+BUILD_UI=ON
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        --lib-only) BUILD_UI=OFF ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+    shift
+done
+
 export PATH="$QTBIN:$PATH"
 
 # Clean start
 rm -rf build __Builds
 
 # Debug
-cmake -S . -B build/Debug -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Debug
+cmake -S . -B build/Debug -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Debug -DBUILD_UI=${BUILD_UI}
 cmake --build build/Debug
 
 # Release
-cmake -S . -B build/Release -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build/Release -DCMAKE_PREFIX_PATH="$(dirname "$QTBIN")" -DCMAKE_BUILD_TYPE=Release -DBUILD_UI=${BUILD_UI}
 cmake --build build/Release
 
 echo "Check __Builds directory"
