@@ -75,6 +75,7 @@ else()
 endif()
 
 qt_standard_project_setup(REQUIRES 6.9)
+include(GNUInstallDirs)
 
 add_subdirectory(third-party)
 add_subdirectory(src/libraries)
@@ -82,3 +83,7 @@ if(BUILD_UI)
     add_subdirectory(src/applications)
 endif()
 add_subdirectory(interfaces)
+
+install(DIRECTORY configurations/
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/qtac/configurations
+)
